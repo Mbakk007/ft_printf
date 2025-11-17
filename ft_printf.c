@@ -23,29 +23,21 @@ int ft_printf(const char *str, ...)
     i = 0;
     size = 0;
     va_start(args, str);
-    while(str[i])
+    while (str[i])
     {
-        if (str[i] == '%' && str[i + 1] == '%')
+        if (str[i] == '%' && str[i + 1])
         {
-            size += ft_putchar_size('%');
-            i++;
-        }
-        else if(str[i] == '%')
-        {
-            /*insert a helper function to detect and 
-            decide which function to apply after '%'.
-            All functions applied must return number
-            of chars printed------DONE*/
-            size += ft_format(args, str[i + 1]);
-            i++;
+		size += ft_format(args, str[i + 1]);
+		i += 2;
         }
         else
-            size += ft_putchar_size(str[i]);
-            i++;
-            //putchar return 1 to increase size---DONE
+        {
+		size += ft_putchar_size(str[i]);
+		i++;
+	}
     }
     va_end(args);
-    return (size); //printf returns number of chars printed
+    return (size);
 }
 
 static  int ft_format(va_list args, const char letter)
@@ -53,8 +45,8 @@ static  int ft_format(va_list args, const char letter)
     int size;
 
     size = 0;
-    if(letter == 'c')
-        size += ft_putchar_size(va_arg(args, int));
+    if (letter == 'c')
+	size += ft_putchar_size(va_arg(args, int));
     else if (letter == 's')
         size += ft_putstr_size(va_arg(args, char *));
     else if (letter == 'p')
@@ -65,7 +57,7 @@ static  int ft_format(va_list args, const char letter)
         size += ft_putunsigned_size(va_arg(args, unsigned int));
     else if (letter == 'x' || letter == 'X')
         size += ft_hex_size(va_arg(args, unsigned int), letter);
+    else if (letter == '%')
+    	size += ft_putchar_size('%');
     return (size);
-    //define all functions needed
-    //putchar, putstr, putnbr, unsigned, hex, pointer
 }
